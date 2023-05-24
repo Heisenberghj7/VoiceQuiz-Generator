@@ -16,48 +16,102 @@ if not creds or creds.invalid:
 form_service = discovery.build('forms', 'v1', http=creds.authorize(
     Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
 
+questions = []
+options = []
+answers = []
+
+# Read the text file
+with open('ChatGPT_Answer.txt', 'r') as file:
+    # Read the lines
+    lines = file.readlines()
+    
+    # Iterate over the lines
+    for line in lines:
+        # Strip leading/trailing whitespaces and newline characters
+        line = line.strip()
+        
+        # Check if the line is empty
+        if not line:
+            continue
+        
+        # Check if it's a question
+        if line.startswith(str(len(questions) + 1) + '.'):
+            # Extract the question and append it to the questions list
+            question = line.split('.', 1)[1].strip()
+            questions.append(question)
+        
+        # Check if it's an answer line
+        elif line.startswith('Answer:'):
+            # Extract the answers and append them to the answers list
+            answer = line.split(':', 1)[1].strip().split(' and ')
+            answers.append(answer)
+        
+        # Otherwise, it's an option line
+        else:
+            # Extract the option and append it to the options list
+            option = line.strip()
+            options.append(option)
+
+# Print the lists
+print("Questions:", questions)
+print("Options:", options)
+print("Answers:", answers)
+
 # Request body for creating a form
 NEW_FORM = {
     "info": {
-        "title": "Quickstart form",
+        "title": "Quiz",
     }
-}
-
-# Request body to add a multiple-choice question
-NEW_QUESTION = {
-    "requests": [{
-        "createItem": {
-            "item": {
-                "title": "In what year did the United States land a mission on the moon?",
-                "questionItem": {
-                    "question": {
-                        "required": True,
-                        "choiceQuestion": {
-                            "type": "RADIO",
-                            "options": [
-                                {"value": "1965"},
-                                {"value": "1967"},
-                                {"value": "1969"},
-                                {"value": "1971"}
-                            ],
-                            "shuffle": True
-                        }
-                    }
-                },
-            },
-            "location": {
-                "index": 0
-            }
-        }
-    }]
 }
 
 # Creates the initial form
 result = form_service.forms().create(body=NEW_FORM).execute()
 
-# Adds the question to the form
-question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
+# Request body to add a multiple-choice question
+update = {
+        "requests": [
+            {
+                "updateSettings": {
+                    "settings": {
+                        "quizSettings": {
+                            "isQuiz": True
+                        }
+                    },
+                    "updateMask": "quizSettings.isQuiz"
+                }
+            }
+        ]
+    }
+for i in range(len(questions)):
+    NEW_QUESTION = {
+        "requests": [{
+            "createItem": {
+                "item": {
+                    "title": questions[i],
+                    "questionItem": {
+                        "question": {
+                            "required": True,
+                            "choiceQuestion": {
+                                "type": "RADIO",
+                                "options": [{"value": j} for j in options[i]],
+                                "shuffle": True
+                            }
+                        }
+                    },
+                },
+                "location": {
+                    "index": 0
+                }
+            }
+        }]
+    }
 
-# Prints the result to show the question has been added
+
+
+    # Adds the question to the form
+    question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=NEW_QUESTION).execute()
+
+    # Prints the result to show the question has been added
 get_result = form_service.forms().get(formId=result["formId"]).execute()
 print(get_result)
+

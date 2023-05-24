@@ -17,9 +17,10 @@ def chat(file, role="user"):
     )
     reply_content = completion.choices[0].message.content
     message_history.append({"role": "assistant", "content": f"{reply_content}"})
-    print(reply_content)
     print(message_history)
     return reply_content
 
 if __name__ == '__main__':
-    chat("transcript.txt")
+    with open('ChatGPT_Answer.txt','w') as f:
+      f.write(chat("transcript.txt"))
+    
