@@ -1,11 +1,13 @@
 import openai
 
-openai.api_key="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"
+openai.api_key="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"
 
 message_history = []
 
 def chat(file, role="user"):
     content=""
+    with open(file,'a') as f:
+       f.write("\nthe Quiz should be written in the following format:\n(number)(- or .)Question\n(numbers or letters))Options\n'(numbers or letters)Answer:'")
     with open(file,'r') as f:
        input_text= f.readlines()
        for text in input_text:

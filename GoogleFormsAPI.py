@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+import re
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
@@ -24,33 +24,39 @@ answers = []
 with open('ChatGPT_Answer.txt', 'r') as file:
     # Read the lines
     lines = file.readlines()
-    
+    quest = re.compile(r'^\d+(?:\)|\.|\-)(.+\?$)')
+    opt = re.compile(r'^[a-zA-Z](?:\)|\.|\-)(.+$)')
+    ans = re.compile(r'Answer:\s([a-zA-Z])')
+
+    current_question = None
+    current_options = []
+
     # Iterate over the lines
     for line in lines:
-        # Strip leading/trailing whitespaces and newline characters
-        line = line.strip()
-        
-        # Check if the line is empty
-        if not line:
-            continue
-        
-        # Check if it's a question
-        if line.startswith(str(len(questions) + 1) + '.'):
-            # Extract the question and append it to the questions list
-            question = line.split('.', 1)[1].strip()
-            questions.append(question)
-        
-        # Check if it's an answer line
-        elif line.startswith('Answer:'):
-            # Extract the answers and append them to the answers list
-            answer = line.split(':', 1)[1].strip().split(' and ')
-            answers.append(answer)
-        
-        # Otherwise, it's an option line
-        else:
-            # Extract the option and append it to the options list
-            option = line.strip()
-            options.append(option)
+        line = line.strip()  # Remove leading/trailing whitespaces
+
+        if line:
+            if quest.match(line):
+                if current_question:
+                    questions.append(current_question)
+                    options.append(current_options)
+                    current_options = []
+
+                current_question = line
+
+            if opt.match(line):
+                current_options.append(line)
+
+            if ans.match(line):
+                answers.append(ans.match(line).group(1))
+
+    # Add the last question and its options
+    if current_question:
+        questions.append(current_question)
+        options.append(current_options)
+
+# Verify that the three lists have the same length
+assert len(questions) == len(options) == len(answers)
 
 # Print the lists
 print("Questions:", questions)
@@ -87,16 +93,16 @@ for i in range(len(questions)):
         "requests": [{
             "createItem": {
                 "item": {
-                    "title": questions[i],
+                    "title": questions[len(questions)-1-i],
                     "questionItem": {
                         "question": {
                             "required": True,
                             "choiceQuestion": {
                                 "type": "RADIO",
-                                "options": [{"value": j} for j in options[i]],
-                                "shuffle": True
+                                "options": [{"value": option} for option in options[len(questions)-1-i]],
+                                "shuffle": False
                             }
-                        }
+                        },
                     },
                 },
                 "location": {
@@ -113,5 +119,5 @@ for i in range(len(questions)):
 
     # Prints the result to show the question has been added
 get_result = form_service.forms().get(formId=result["formId"]).execute()
-print(get_result)
+print(get_result['responderUri'])
 
