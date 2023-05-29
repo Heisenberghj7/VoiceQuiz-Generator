@@ -1,6 +1,7 @@
 import openai
 
-openai.api_key="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"
+with open("openai_key.txt",'r') as f:
+    openai.api_key=f.readline()
 
 message_history = []
 
