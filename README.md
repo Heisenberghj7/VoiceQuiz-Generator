@@ -1,4 +1,5 @@
 <img src="Architecture.png">
+
 ## Setup and Usage
 
 1. Clone the repository:
