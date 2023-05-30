@@ -1,2 +1,6 @@
 *.txt
 *.json
+*.pdf
+*.docx
+!Demo_video_Google_Drive_link.txt
+*.mp4

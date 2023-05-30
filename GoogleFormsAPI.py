@@ -5,6 +5,7 @@ from httplib2 import Http
 from oauth2client import client, file, tools
 SCOPES = "https://www.googleapis.com/auth/forms.body"
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
+
 def Quiz(s_file):
     
     store = file.Storage(s_file)

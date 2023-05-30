@@ -22,7 +22,6 @@ def chat(file, role="user"):
     message_history.append({"role": "assistant", "content": f"{reply_content}"})
     return reply_content
 
-# if __name__ == '__main__':
 def chatAnswer(file1,mode):
     with open(file1, mode) as f:
       f.write(chat('transcript.txt'))
