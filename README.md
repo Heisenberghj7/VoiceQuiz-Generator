@@ -30,6 +30,3 @@
 ## `Contact Me:`
 
 📫 Feel free to contact me if anything is wrong or if anything needs to be changed 😎!  **medhajjari9@gmail.com**
-
-
-`
