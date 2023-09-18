@@ -9,7 +9,7 @@
 
 - 🎯 **`Business Goal`** :
 
-## `Setup and Usage`
+## `Setup and Usage :`
 
 1. Clone the repository:
 
@@ -25,8 +25,11 @@
 5. Click on the "Start Recording" button to begin the audio recording.
 6. Speak the topic and number of questions for the quiz.
 
+<a href="https://colab.research.google.com/github/heisenberghj7/Voice-Quiz-Generator/" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-- 📫 Feel free to contact me if anything is wrong or if anything needs to be changed 😎!  **medhajjari9@gmail.com**
+## `Contact Me:`
 
-<a href="https://colab.research.google.com/github/heisenberghj7/Cars-Recommendation/" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+📫 Feel free to contact me if anything is wrong or if anything needs to be changed 😎!  **medhajjari9@gmail.com**
+
+
 `
